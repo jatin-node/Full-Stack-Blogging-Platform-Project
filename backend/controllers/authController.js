@@ -2,37 +2,34 @@ import userModel from "../models/user-model.js";
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/generateToken.js";
 import { nanoid } from "nanoid";
+import { emailRegex, nameRegex, passwordRegex } from "../utils/validation.js";
 
-let emailregex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // regex for email
-let passwordregex =
-  /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{7,}$/; // regex for password
-let nameregex = /^(?![_.])[a-zA-Z0-9._]{3,20}(?<![_.])$/; // regex for name
+// data to send to frontend
+const datatoSend = (user) => {
+  return {
+    profile_img: user.personalInfo.profile_img,
+    username: user.personalInfo.username,
+    Fullname: user.personalInfo.Fullname
+  };
+};
 
 //function to make generate unique Username
 const generateUsername = async (email) => {
   let username = email.split("@")[0];
-  let isUsernameExists = await userModel
-    .exists({ "personalInfo.username": username })
-    .then((result) => result);
-  isUsernameExists ? (username += nanoid().substring(0, 5)) : "";
+  let isUsernameExists = await userModel.exists({
+    "personalInfo.username": username,
+  });
+  if (isUsernameExists) {
+    username += nanoid().substring(0, 5);
+  }
   return username;
 };
+
 //sign-up function
 export const registerUser = async (req, res) => {
   try {
     const { Fullname, Password, email } = req.body;
-    if (!nameregex.test(Fullname)) {
-      return res.status(400).json("Fullname is Invalid");
-    }
-    if (!emailregex.test(email)) {
-      return res.status(400).json({ error: "Invalid email format" });
-    }
-    if (!passwordregex.test(Password)) {
-      return res.status(400).json({
-        error:
-          "Password should be 7 to 20 characters long, with at least one uppercase letter, one lowercase letter, one digit, and one special character",
-      });
-    }
+
     // Checking if user account is already created
     let user = await userModel.findOne({
       "personalInfo.email": email,
@@ -52,10 +49,10 @@ export const registerUser = async (req, res) => {
         });
         let token = generateToken(newUser);
         res.cookie("token", token);
-        res.json(newUser);
+        // res.json(newUser)
+        res.status(200).json(datatoSend(newUser)); 
       });
     });
-    console.log("done");
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -64,10 +61,10 @@ export const registerUser = async (req, res) => {
 //login function
 export const loginUser = async (req, res) => {
   let { email, Password } = req.body;
-  if (!emailregex.test(email)) {
+  if (!emailRegex.test(email)) {
     return res.status(400).json({ error: "Invalid email format" });
   }
-  if (!passwordregex.test(Password)) {
+  if (!passwordRegex.test(Password)) {
     return res.status(400).json({
       error:
         "Password should be 7 to 20 characters long, with at least one uppercase letter, one lowercase letter, one digit, and one special character",
@@ -91,5 +88,5 @@ export const loginUser = async (req, res) => {
 //logout function
 export const logOutUser = (req, res) => {
   res.cookie("token", "");
-  res.json("log-out successfull");
+  res.json("log-out successful");
 };
