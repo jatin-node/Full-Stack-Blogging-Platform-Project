@@ -10,7 +10,7 @@ const Auth = ({ type }) => {
     <AnimationWrapper type={type}>
       <section className="flex justify-center items-center pt-[100px]">
         <div className="w-[85%] max-w-[500px] bg-white">
-          <form className="w-full flex flex-col items-center gap-5">
+          <form method="post" className="w-full flex flex-col items-center gap-5">
             <h1 className="flex mb-10 justify-center text-4xl capitalize font-bold text-center">
               {type ? "Create Account" : "Welcome Back"}
             </h1>
@@ -69,10 +69,10 @@ const Auth = ({ type }) => {
               //  Log in Form
               <>
                 <InputBox
-                  type="text"
-                  placeholder="User Name"
-                  name="Username"
-                  className="fi fi-rr-user"
+                  type="email"
+                  placeholder="email@gmail.com"
+                  name="email"
+                  className="fi fi-rr-envelope"
                 />
                 <div className="w-full relative">
                   <InputBox
