@@ -1,24 +1,30 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useContext } from "react";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import InputBox from "./InputBox";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import googlelogo from "../assets/google-logo.png";
 import AnimationWrapper from "./AnimationWrapper";
 import { emailRegex, nameRegex, passwordRegex } from "../utils/validation";
+import { AuthContext } from "../context/AuthContext";
 
 const Auth = ({ type }) => {
+  const navigate = useNavigate();
+  const { setAuth } = useContext(AuthContext);
   const [islock, setislock] = useState(true);
-  const authform = useRef();
+  const signInForm = useRef();
+  const logInForm = useRef();
 
   const serverConnect = async (endpoint, formData) => {
     try {
       let backendLink = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
-      const response = await axios.post(
-        `${backendLink}${endpoint}`,
-        formData
-      );
-      console.log(response.data);
+      const response = await axios.post(`${backendLink}${endpoint}`, formData, {
+        withCredentials: true,
+      });
+      const { token, user } = response.data;
+      setAuth({ token, user });
+      localStorage.setItem('user', JSON.stringify(user));
+      navigate("/");
     } catch (error) {
       console.log(error);
       toast.error(error.response?.data || error.message);
@@ -28,19 +34,32 @@ const Auth = ({ type }) => {
   const handlesubmit = async (e) => {
     e.preventDefault();
     const endpoint = type ? "/sign-in" : "/log-in";
-    
+
     const formData = {
-      email: authform.current.elements.email.value,
-      Password: authform.current.elements.Password.value,
+      email: type
+        ? signInForm.current.elements.email.value
+        : logInForm.current.elements.email.value,
+      Password: type
+        ? signInForm.current.elements.Password.value
+        : logInForm.current.elements.Password.value,
     };
     if (type) {
-      formData.Fullname = authform.current.elements.Fullname.value;
+      formData.Fullname = signInForm.current.elements.Fullname.value;
       if (!nameRegex.test(formData.Fullname)) {
         return toast.error("Name is Invalid");
       }
     }
-    
-    // console.log(formData)
+
+    if (!formData.email) {
+      return toast.error("Enter email");
+    }
+    if (!formData.Password) {
+      return toast.error("Enter password");
+    }
+    if (type && !formData.Fullname) {
+      return toast.error("Enter Full Name");
+    }
+
     if (!emailRegex.test(formData.email)) {
       return toast.error("Invalid email format");
     }
@@ -59,7 +78,7 @@ const Auth = ({ type }) => {
         <div className="w-[85%] max-w-[500px] bg-white">
           <Toaster />
           <form
-            ref={authform}
+            ref={type ? signInForm : logInForm}
             className="w-full flex flex-col items-center gap-5"
           >
             <h1 className="flex mb-10 justify-center text-4xl capitalize font-bold text-center">

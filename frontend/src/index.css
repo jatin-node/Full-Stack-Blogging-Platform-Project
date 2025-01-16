@@ -4,9 +4,12 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-
-@layer components{
-  .auth-btn{
-    @apply px-4 py-3 bg-zinc-800 hover:bg-black text-white rounded-xl
+@layer components {
+  .auth-btn {
+    @apply px-4 py-3 bg-zinc-800 hover:bg-black text-white rounded-xl;
+  }
+  
+  .link{
+    @apply hover:text-black hover:bg-gray-100 p-3 px-4 block opacity-75;
   }
 }

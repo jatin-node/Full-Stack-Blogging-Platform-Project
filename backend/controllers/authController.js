@@ -9,7 +9,7 @@ const datatoSend = (user) => {
   return {
     profile_img: user.personalInfo.profile_img,
     username: user.personalInfo.username,
-    Fullname: user.personalInfo.Fullname
+    Fullname: user.personalInfo.Fullname,
   };
 };
 
@@ -48,9 +48,13 @@ export const registerUser = async (req, res) => {
           },
         });
         let token = generateToken(newUser);
-        res.cookie("token", token);
-        // res.json(newUser)
-        res.status(200).json(datatoSend(newUser)); 
+        res.cookie("token", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
+          maxAge: 24 * 60 * 60 * 1000, // 1 day
+        });
+        res.status(200).json({ token, user: datatoSend(newUser) });
       });
     });
   } catch (error) {
@@ -78,8 +82,12 @@ export const loginUser = async (req, res) => {
   bcrypt.compare(Password, user.personalInfo.password, (err, result) => {
     if (result) {
       let token = generateToken(user);
-      res.cookie("token", token);
-      res.json(user);
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+      });
+      res.json({ token, user: datatoSend(user) });
     } else {
       return res.status(401).send("Incorrect email or password");
     }
@@ -87,6 +95,11 @@ export const loginUser = async (req, res) => {
 };
 //logout function
 export const logOutUser = (req, res) => {
-  res.cookie("token", "");
-  res.json("log-out successful");
+  res.cookie("token", "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    expires: new Date(0),
+  });
+  res.json();
 };
