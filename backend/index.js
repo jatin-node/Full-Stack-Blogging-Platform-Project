@@ -3,10 +3,12 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
-import userRouter from "./routes/userRouter.js";
 import DB from "./config/mongoose-connection.js";
 import cors from "cors";
 const port = process.env.PORT || 3000;
+
+import authRouter from "./routes/authRouter.js";
+import userRouter from "./routes/userRouter.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,7 +28,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", userRouter);
+app.use("/", authRouter);
+app.use("/user", userRouter);
 
 app.listen(port, () => {
   console.log(`server running on http://localhost:${port}`);

@@ -9,17 +9,25 @@ const UserNavigationPanel = () => {
   console.log(auth);
 
   const signOut = async () => {
-      let backendLink = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
-      const response = await axios.get(`${backendLink}/log-out`, {
-        withCredentials: true,
-      });
-      setAuth({ token: null });
-      console.log(response.data);
+    let backendLink =
+      import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+    const response = await axios.get(`${backendLink}/log-out`, {
+      withCredentials: true,
+    });
+    setAuth({ token: null });
+    console.log(response.data);
   };
 
   return (
     <AnimationWrapper transition={{ duration: 0.2 }}>
       <div className="w-60 bg-white absolute right-0 border border-gray-100 overflow-hidden duration-200">
+        <Link
+          to={`${auth.user.username}/editor`}
+          className="flex gap-2 link pl-8 py-4 font-semibold"
+        >
+          <i className="fi fi-tr-file-edit"></i>
+          <span className="">Write</span>
+        </Link>
         <Link to={`user/${auth.user.username}`} className="link pl-8 py-4">
           Profile
         </Link>
