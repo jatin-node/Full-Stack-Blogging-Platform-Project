@@ -2,20 +2,14 @@ import React, { useContext } from "react";
 import AnimationWrapper from "./AnimationWrapper";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import axios from "axios";
+import { apiGet } from "../utils/api"; // Import the utility function
 
 const UserNavigationPanel = () => {
   const { auth, setAuth } = useContext(AuthContext);
-  console.log(auth);
 
   const signOut = async () => {
-    let backendLink =
-      import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
-    const response = await axios.get(`${backendLink}/log-out`, {
-      withCredentials: true,
-    });
+    const response = await apiGet("/log-out");
     setAuth({ token: null });
-    console.log(response.data);
   };
 
   return (

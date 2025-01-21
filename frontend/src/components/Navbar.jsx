@@ -19,12 +19,12 @@ const Navbar = () => {
   return (
     <>
       <nav className="navbar w-full flex justify-center">
-        <div className="relative w-full max-w-f7xl h-[10vh] border-b-[1px] flex justify-between items-center px-5 md:px-40">
+        <div className="relative w-full max-w-7xl h-[10vh]  flex justify-between items-center px-5 md:px-20">
           <Link to="/">
             <img src={logo} alt="" />
           </Link>
 
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-5 ">
             <div className="relative hidden sm:block">
               <i className="absolute text-xl top-[10px] top right-5 fi fi-rr-search"></i>
               <input

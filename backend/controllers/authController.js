@@ -77,7 +77,7 @@ export const loginUser = async (req, res) => {
 
   let user = await userModel.findOne({ "personalInfo.email": email });
   if (!user) {
-    return res.status(401).send("Incorrect email or password");
+    return res.status(401).send("you don't have an account");
   }
   bcrypt.compare(Password, user.personalInfo.password, (err, result) => {
     if (result) {

@@ -7,6 +7,7 @@ import googlelogo from "../assets/google-logo.png";
 import AnimationWrapper from "./AnimationWrapper";
 import { emailRegex, nameRegex, passwordRegex } from "../utils/validation";
 import { AuthContext } from "../context/AuthContext";
+import { apiPost } from "../utils/api"; // Import the utility function
 
 const Auth = ({ type }) => {
   const navigate = useNavigate();
@@ -17,13 +18,10 @@ const Auth = ({ type }) => {
 
   const serverConnect = async (endpoint, formData) => {
     try {
-      let backendLink = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
-      const response = await axios.post(`${backendLink}${endpoint}`, formData, {
-        withCredentials: true,
-      });
-      const { token, user } = response.data;
+      const response = await apiPost(endpoint, formData);
+      const { token, user } = response;
       setAuth({ token, user });
-      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem("user", JSON.stringify(user));
       navigate("/");
     } catch (error) {
       console.log(error);
