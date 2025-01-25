@@ -7,12 +7,12 @@ function App() {
   return (
       <div className="">
         <Routes>
-          <Route path="/:user/editor" element={<Editor />}/>
           <Route path="/" element={<Home />}>
             <Route path="/sign-in" element={<Auth type={true} />} />
             <Route path="/log-in" element={<Auth type={false} />} />
             <Route path="/log-out" element={<Home />} />
           </Route>
+          <Route path="/:user/editor" element={<Editor />}/>
         </Routes>
       </div>
   );

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const userSchema = mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     personalInfo: {
       Fullname: {
@@ -15,7 +15,10 @@ const userSchema = mongoose.Schema(
         lowercase: true,
         unique: true,
       },
-      password: String,
+      password: {
+        type: String,
+        required: true,
+      },
       username: {
         type: String,
         minlength: [3, "Username must be 3 letters long"],
@@ -30,7 +33,7 @@ const userSchema = mongoose.Schema(
         default: "/default_profile.png"
       },
     },
-    account_info: {
+    accountInfo: {
       total_posts: {
         type: Number,
         default: 0,
@@ -44,10 +47,10 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    blogs: {
+    blogs: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "blogs",
-    },
+    }],
   },
   {
     timestamps: {
