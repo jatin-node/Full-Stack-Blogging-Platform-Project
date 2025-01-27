@@ -22,7 +22,7 @@ export const apiPost = async (endpoint, data, options = {}) => {
     });
     return response.data;
   } catch (error) {
-    console.error("API POST request error:", error);
+    console.error("API UPLOAD request error:", error.response ? error.response.data : error.message);
     throw error;
   }
 };

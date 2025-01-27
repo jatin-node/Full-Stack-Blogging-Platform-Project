@@ -1,20 +1,28 @@
 import React, { useState, useContext } from "react";
 import logo from "../assets/logo.png";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import UserNavigationPanel from "./UserNavigationPanel";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [isclicked, setisclicked] = useState(false);
   const [userNavPanel, setuserNavPanel] = useState(false);
   const { auth } = useContext(AuthContext);
 
   const backendBaseUrl = import.meta.env.VITE_BACKEND_URL;
-  const handleblur = ()=>{
+  const handleblur = () => {
     setTimeout(() => {
       setuserNavPanel(false);
     }, 100);
-  }
+  };
+
+  const handleSearch = (e) => {
+    let query = e.target.value;
+    if (e.keyCode === 13 && query.length) {
+      navigate(`/search/${query}`);
+    }
+  };
 
   return (
     <>
@@ -31,6 +39,7 @@ const Navbar = () => {
                 className=" border-2 pl-4 pr-20 py-2 rounded-full"
                 type="text"
                 placeholder="Search"
+                onKeyDown={handleSearch}
               />
             </div>
             <i
@@ -73,6 +82,7 @@ const Navbar = () => {
                 className=" border-2  w-full mx-5 pl-4 py-2 rounded-full"
                 type="text"
                 placeholder="Search"
+                onKeyDown={handleSearch}
               />
             </div>
           )}

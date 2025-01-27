@@ -77,14 +77,20 @@ const BlogEditor = () => {
   const saveDraft = async () => {
     if (!title.length) {
       toast.error("Write a title to save draft");
+    } else if (desc.length > 200) {
+      toast.error("Description is too long. Maximum length is 200 characters.");
     } else {
       const loadingToast = toast.loading("Saving blog...");
 
       const blogData = { title, banner, desc, tags, draft: true };
-      await apiPost(`/${auth.user.username}/create-blog`, blogData);
-      toast.dismiss(loadingToast);
-      toast.success("Blog Saved successfully!");
-      
+      try {
+        await apiPost(`/${auth.user.username}/create-blog`, blogData);
+        toast.dismiss(loadingToast);
+        toast.success("Blog Saved successfully!");
+      } catch (error) {
+        toast.dismiss(loadingToast);
+        toast.error("Error saving blog.");
+      }
     }
   };
 

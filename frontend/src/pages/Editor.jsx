@@ -35,14 +35,18 @@ const Editor = () => {
 
   const fetchData = async () => {
     if (user) {
-      const response = await apiGet(`/${user}/editor`);
-      console.log(response);
+      try {
+        const response = await apiGet(`/${user}/editor`);
+        console.log(response);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     }
   };
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [user]);
 
   return (
     <EditorContext.Provider

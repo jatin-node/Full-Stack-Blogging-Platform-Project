@@ -1,8 +1,6 @@
-POST http://localhost:3000/sign-in
+POST http://localhost:4000/search-users
 Content-Type: application/json
 
 {
-    "Fullname": "Jatin12345",
-    "Password": "Jatin@12345555555555512345",
-    "email": "manav@gmail.com"
+    "query": ""
 }
