@@ -27,11 +27,7 @@ router.get("/editor", isloggedin, (req, res) => {
   res.send("Editor page");
 });
 
-router.post(
-  "/upload",
-  multer.array("images", 10),
-  isloggedin,
-  async (req, res) => {
+router.post("/upload", multer.array("images", 10), isloggedin, async (req, res) => {
     try {
       const uploadPromises = uploadImagesToCloudinary(req.files);
       const urls = await Promise.all(uploadPromises);
@@ -41,6 +37,7 @@ router.post(
     }
   }
 );
+
 
 router.post("/create-blog", isloggedin, async (req, res) => {
   try {

@@ -5,6 +5,7 @@ import Editor from "./pages/Editor";
 import SearchPage from "./pages/SearchPage";
 import Navbar from "./components/Navbar";
 import PageNotFound from "./components/PageNotFound";
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
   const location = useLocation();
@@ -20,6 +21,7 @@ function App() {
           <Route path="/log-out" element={<Home />} />
           <Route path="/search/:query" element={<SearchPage />} />
           <Route path="/:user/editor" element={<Editor />}/>
+          <Route path="/user/:id" element={<ProfilePage/>}/>
           <Route path="*" element={<PageNotFound />}/>
         </Routes>
       </div>

@@ -1,6 +1,10 @@
 import express from "express";
 const router = express.Router();
-import { registerUser, loginUser, logOutUser } from "../controllers/authController.js";
+import {
+  registerUser,
+  loginUser,
+  logOutUser,
+} from "../controllers/authController.js";
 import blogModel from "../models/blog-model.js";
 import userModel from "../models/user-model.js";
 
@@ -18,7 +22,7 @@ router.post("/search-blogs", (req, res) => {
   console.log(query);
   if (tag) {
     findQuery = { tags: tag, draft: false };
-  } else if(query) {
+  } else if (query) {
     findQuery = { title: new RegExp(query, "i"), draft: false };
   }
   let maxLimit = 5;
@@ -40,11 +44,26 @@ router.post("/search-blogs", (req, res) => {
     });
 });
 
+router.post("/get-profile", (req, res) => {
+  const { username } = req.body;
+  userModel
+    .findOne({ "personalInfo.username": username })
+    .select("-personalInfo.password -google_auth -blogs -updatedAt")
+    .then((user) => {
+      return res.status(200).json({ user });
+    })
+    .catch((err) => {
+      return res.status(500).json({ error: err.message });
+    });
+});
+
 router.post("/search-users", (req, res) => {
   let { query } = req.body;
   userModel
     .find({ "personalInfo.Fullname": new RegExp(query, "i") })
-    .select("personalInfo.Fullname personalInfo.profile_img personalInfo.username -_id")
+    .select(
+      "personalInfo.Fullname personalInfo.profile_img personalInfo.username -_id"
+    )
     .then((users) => {
       return res.status(200).json({ users });
     })
