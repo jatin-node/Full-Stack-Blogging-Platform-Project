@@ -8,7 +8,7 @@ const AboutUser = ({bio, joinedAt, className}) => {
       {/* <div className='flex gap-x-7 gap-y-2 flex-wrap my-7 items-center text-zinc-400'>
 
       </div> */}
-      <p className='text-xl leading-7 text-zinc-400'>Joined on {GetDay(joinedAt)}</p>
+      <p className='text-lg leading-7 text-zinc-400'>Joined on {GetDay(joinedAt)}</p>
     </div>
   )
 }

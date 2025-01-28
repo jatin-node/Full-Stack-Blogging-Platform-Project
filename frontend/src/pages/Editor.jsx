@@ -3,6 +3,7 @@ import { apiGet } from "../utils/api";
 import { AuthContext } from "../context/AuthContext";
 import BlogEditor from "../components/BlogEditor";
 import Publishform from "../components/Publishform";
+import { toast, Toaster } from "react-hot-toast";
 const blogEditor = {
   title: "",
   banner: "",
@@ -17,6 +18,7 @@ export const EditorContext = createContext({});
 const Editor = () => {
   const [blog, setBlog] = useState(blogEditor);
   const [editorState, seteditorState] = useState("editor");
+  const [textEditor, setTextEditor] = useState({isReady: false});
   const { auth } = useContext(AuthContext);
   const user = auth?.user?.username;
 
@@ -50,8 +52,9 @@ const Editor = () => {
 
   return (
     <EditorContext.Provider
-      value={{ blog, setBlog, editorState, seteditorState, resetForm }}
+      value={{ blog, setBlog, editorState, seteditorState, textEditor, setTextEditor, resetForm }}
     >
+      <Toaster/>
       {auth.token ? (
         editorState === "editor" ? (
           <BlogEditor />
@@ -59,7 +62,9 @@ const Editor = () => {
           <Publishform />
         )
       ) : (
-        <div>Sign-in required</div>
+        <>
+          
+        </>
       )}
     </EditorContext.Provider>
   );

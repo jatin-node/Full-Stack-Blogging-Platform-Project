@@ -28,4 +28,24 @@
   .blog-index {
     @apply text-4xl sm:text-3xl lg:text-5xl font-bold text-zinc-200 leading-none;
   }
+
+  #textEditor h2,
+  h2 {
+    @apply text-4xl leading-normal font-bold max-md:text-3xl max-md:leading-snug !important;
+  }
+
+  #textEditor h3,
+  h3 {
+    @apply text-3xl leading-loose max-md:text-2xl max-md:leading-normal !important;
+  }
+}
+.ce-block__content,
+.ce-toolbar__content {
+  max-width: 900px;
+}
+
+.cdx-settings-button[data-tune="withBorder"],
+.cdx-settings-button[data-tune="withBackground"],
+.cdx-settings-button[data-tune="stretched"] {
+  display: none;
 }

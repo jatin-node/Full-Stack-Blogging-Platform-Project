@@ -1,13 +1,12 @@
 import Header from "@editorjs/header";
 import List from "@editorjs/list";
-import Image from "@editorjs/image";
 import Embed from "@editorjs/embed";
 import Marker from "@editorjs/marker";
 import InlineCode from "@editorjs/inline-code";
 import Quote from "@editorjs/quote";
 import LinkTool from "@editorjs/link";
 import CodeTool from "@editorjs/code";
-import ImageTool from "@editorjs/image";
+import ImageTool from "@editorjs/image"; // Corrected import statement
 
 const uploadImageByUrl = (e) => {
   let link = new Promise((resolve, reject) => {
@@ -26,6 +25,9 @@ const uploadImageByUrl = (e) => {
 };
 
 const uploadImageByFile = (file) => {
+  if (!file) {
+    return Promise.reject(new Error("No file selected"));
+  }
   // Implement the logic to upload the file and return the URL
   return new Promise((resolve, reject) => {
     // Example logic
@@ -59,7 +61,7 @@ export const tools = {
     config: {
       uploader: {
         uploadByUrl: uploadImageByUrl,
-        uploadByFile: uploadImageByFile,
+        uploadByFile: uploadImageByFile, // Uncommented uploadByFile
       },
     },
   },

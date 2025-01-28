@@ -9,6 +9,7 @@ const port = process.env.PORT || 3000;
 
 import authRouter from "./routes/authRouter.js";
 import userRouter from "./routes/userRouter.js";
+import blogRouter from "./routes/blogRouter.js"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -30,6 +31,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", authRouter);
 app.use("/:user", userRouter); 
+app.use("/blog", blogRouter);
 
 app.listen(port, () => {
   console.log(`server running on http://localhost:${port}`);

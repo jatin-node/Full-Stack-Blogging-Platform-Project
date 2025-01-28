@@ -6,6 +6,7 @@ import SearchPage from "./pages/SearchPage";
 import Navbar from "./components/Navbar";
 import PageNotFound from "./components/PageNotFound";
 import ProfilePage from "./pages/ProfilePage";
+import BlogPage from "./pages/BlogPage";
 
 function App() {
   const location = useLocation();
@@ -22,6 +23,7 @@ function App() {
           <Route path="/search/:query" element={<SearchPage />} />
           <Route path="/:user/editor" element={<Editor />}/>
           <Route path="/user/:id" element={<ProfilePage/>}/>
+          <Route path="/blog/:blogId" element={<BlogPage/>} />
           <Route path="*" element={<PageNotFound />}/>
         </Routes>
       </div>

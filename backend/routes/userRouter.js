@@ -41,10 +41,13 @@ router.post("/upload", multer.array("images", 10), isloggedin, async (req, res) 
 
 router.post("/create-blog", isloggedin, async (req, res) => {
   try {
-    const { title, desc, tags, banner, draft } = req.body;
+    const { title, desc, tags, banner,content, draft } = req.body;
     if (!draft) {
       if (!title && !desc && !tags && !banner) {
         return res.status(400).json({ error: "All fields are required" });
+      }
+      if(!content.blocks.length){
+        return res.status(403).json({ error: "Their must be some blog content" })
       }
     }
     const authorId = req.user._id;
@@ -53,18 +56,17 @@ router.post("/create-blog", isloggedin, async (req, res) => {
       .replace(/[^a-zA-Z0-9]/g, "-")
       .replace(/\s+/g, "-")
       .trim()}${nanoid()}`;
-
     const blog = await blogModel.create({
       blogId,
       title,
       desc,
+      content,
       tags: formattedTags,
       banner,
       draft: Boolean(draft),
       author: authorId,
     });
     const user = await userModel.findById(authorId);
-    console.log(user);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }

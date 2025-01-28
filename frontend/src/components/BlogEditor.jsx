@@ -7,6 +7,8 @@ import { AuthContext } from "../context/AuthContext";
 import { apiPost, apiUpload } from "../utils/api";
 import { toast, Toaster } from "react-hot-toast";
 import { EditorContext } from "../pages/Editor";
+import EditorJs from "@editorjs/editorjs";
+import { tools } from "./Tools";
 
 const BlogEditor = () => {
   const { auth } = useContext(AuthContext);
@@ -16,6 +18,8 @@ const BlogEditor = () => {
     blog: { title, banner, content, tags, desc, author },
     setBlog,
     seteditorState,
+    textEditor,
+    setTextEditor,
   } = useContext(EditorContext);
 
   // Blog Title enter avoid function
@@ -65,15 +69,25 @@ const BlogEditor = () => {
       toast.error("Error uploading image.");
     }
   };
-
-  const handlePublishEvent = () => {
-    if (!banner.length || !title.length || !desc.length) {
-      toast.error("Please fill all the fields");
-    } else {
-      seteditorState("publish");
+  // publish blog on clicking publish button
+  const handlePublishEvent = async () => {
+    if (!banner.length || !title.length) {
+      return toast.error("Please fill all the fields");
+    }
+    try {
+      const data = await textEditor.save();
+      if (data.blocks.length) {
+        setBlog({ ...blog, content: data });
+        seteditorState("publish");
+      } else {
+        toast.error("Write something in your blog to publish it.");
+      }
+    } catch (error) {
+      console.error("Error saving blog content:", error);
+      toast.error("Error saving blog content.");
     }
   };
-
+  // Function for Saving draft of a blog
   const saveDraft = async () => {
     if (!title.length) {
       toast.error("Write a title to save draft");
@@ -82,7 +96,7 @@ const BlogEditor = () => {
     } else {
       const loadingToast = toast.loading("Saving blog...");
 
-      const blogData = { title, banner, desc, tags, draft: true };
+      const blogData = { title, banner, desc, tags, content, draft: true };
       try {
         await apiPost(`/${auth.user.username}/create-blog`, blogData);
         toast.dismiss(loadingToast);
@@ -99,6 +113,18 @@ const BlogEditor = () => {
     let img = e.target;
     img.src = defaultBanner;
   };
+
+  useEffect(() => {
+    setTextEditor(
+      new EditorJs({
+        holderId: "textEditor",
+        data: content,
+        tools: tools,
+        placeholder: "Let's write an awesome story",
+      })
+    );
+  }, []);
+
   return (
     <>
       <nav className="navbar">
@@ -148,13 +174,8 @@ const BlogEditor = () => {
               defaultValue={title}
             ></textarea>
             <hr className="w-full" />
-            <textarea
-              placeholder="Description"
-              className="text-2xl font-normal w-full h-20 outline-none resize-none mt-5 leading-tight placeholder:opacity-40"
-              onKeyDown={handleTitleKeyDown}
-              onChange={handleDescChange}
-              defaultValue={desc}
-            ></textarea>
+            <hr className="w-full opacity-10 my-5" />
+            <div id="textEditor"></div>
           </div>
         </section>
       </AnimationWrapper>

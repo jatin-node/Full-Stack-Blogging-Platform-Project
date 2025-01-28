@@ -17,15 +17,16 @@ router.post("/log-in", loginUser);
 router.get("/log-out", logOutUser);
 
 router.post("/search-blogs", (req, res) => {
-  let { tag, query } = req.body;
+  let { tag, author, query, limit, eliminate_blog } = req.body;
   let findQuery;
-  console.log(query);
   if (tag) {
-    findQuery = { tags: tag, draft: false };
+    findQuery = { tags: tag, draft: false, blogId: { $ne: eliminate_blog } };
   } else if (query) {
     findQuery = { title: new RegExp(query, "i"), draft: false };
+  } else if(author){
+    findQuery = { author, draft: false };
   }
-  let maxLimit = 5;
+  let maxLimit = limit ? limit : 50;
 
   blogModel
     .find(findQuery)
@@ -35,7 +36,7 @@ router.post("/search-blogs", (req, res) => {
     )
     .sort({ publishedAt: -1 })
     .select("blogId title desc banner activity tags publishedAt -_id ")
-    // .limit(maxLimit)
+    .limit(maxLimit)
     .then((blogs) => {
       return res.status(200).json({ blogs });
     })
