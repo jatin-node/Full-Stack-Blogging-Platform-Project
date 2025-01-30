@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import logo from "../assets/logo.png";
 import AnimationWrapper from "./AnimationWrapper";
 import defaultBanner from "../assets/images/blogbanner.png";
@@ -12,6 +12,8 @@ import { tools } from "./Tools";
 
 const BlogEditor = () => {
   const { auth } = useContext(AuthContext);
+
+  let { blogId } = useParams();
 
   const {
     blog,
@@ -98,7 +100,7 @@ const BlogEditor = () => {
 
       const blogData = { title, banner, desc, tags, content, draft: true };
       try {
-        await apiPost(`/${auth.user.username}/create-blog`, blogData);
+        await apiPost(`/${auth.user.username}/create-blog`, {...blogData, id: blogId});
         toast.dismiss(loadingToast);
         toast.success("Blog Saved successfully!");
       } catch (error) {
@@ -117,8 +119,8 @@ const BlogEditor = () => {
   useEffect(() => {
     setTextEditor(
       new EditorJs({
-        holderId: "textEditor",
-        data: content,
+        holder: "textEditor",
+        data: Array.isArray(content) ? content[0] : content,
         tools: tools,
         placeholder: "Let's write an awesome story",
       })

@@ -1,12 +1,8 @@
-POST http://localhost:4000/user/create-blog
+POST http://localhost:4000/blog/like-blog
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNhdEBnbWFpbC5jb20iLCJpZCI6IjY3OTYxNWQ0OTFlYmUzYWIwY2IwNWYyYyIsImlhdCI6MTczODE2MDMwOCwiZXhwIjoxNzM4MjQ2NzA4fQ.Ig7gQ9ppQ8_shSjDqWjPSXtooMpSHCWo9SX_46DR1Vk
 
 {
-  "title": "test title @ 3 134 # 4$ 123 asdas 12, ",
-  "banner": "https://example.com/image-url",
-  "des": "this is a short des",
-  "content": {
-    "blocks": [1, 2]
-  },
-  "tags": ["tag1", "tag2"]
+  "_id": "67961a8091ebe3ab0cb05f3f",
+  "isLikedByUser": "true"
 }

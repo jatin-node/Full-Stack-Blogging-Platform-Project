@@ -1,9 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { apiGet } from "../utils/api";
+import axios from "axios"; 
 import { AuthContext } from "../context/AuthContext";
 import BlogEditor from "../components/BlogEditor";
 import Publishform from "../components/Publishform";
-import { toast, Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
+import { Navigate, useParams } from "react-router-dom";
+
 const blogEditor = {
   title: "",
   banner: "",
@@ -16,11 +18,15 @@ const blogEditor = {
 export const EditorContext = createContext({});
 
 const Editor = () => {
+  let { blogId } = useParams();
+
   const [blog, setBlog] = useState(blogEditor);
   const [editorState, seteditorState] = useState("editor");
-  const [textEditor, setTextEditor] = useState({isReady: false});
+  const [textEditor, setTextEditor] = useState({ isReady: false });
+  const [loading, setloading] = useState(true);
+
   const { auth } = useContext(AuthContext);
-  const user = auth?.user?.username;
+  // const user = auth?.user?.username;
 
   // Reset form function
   const resetForm = () => {
@@ -35,36 +41,66 @@ const Editor = () => {
     });
   };
 
-  const fetchData = async () => {
-    if (user) {
-      try {
-        const response = await apiGet(`/${user}/editor`);
-        console.log(response);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    }
+  // const fetchData = async () => {
+  //   if (user) {
+  //     try {
+  //       const response = await apiGet(`/${user}/editor`);
+  //       console.log(response);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   }
+  // };
+
+  const fetchBlog = () => {
+    axios.post(import.meta.env.VITE_BACKEND_URL + "/blog/get-blog", {
+      blogId, draft: true, mode: 'edit'
+    })
+    .then(({ data: { blog } }) => {
+      console.log(blog);
+      setBlog(blog);
+      setloading(false);
+    })
+    .catch(err => {
+      console.log(err);
+      setBlog(null);
+      setloading(false);
+    });
   };
 
   useEffect(() => {
-    fetchData();
-  }, [user]);
+    // fetchData();
+
+    if (!blogId) {
+      return setloading(false);
+    }
+
+    fetchBlog();
+  }, [blogId]);
 
   return (
     <EditorContext.Provider
-      value={{ blog, setBlog, editorState, seteditorState, textEditor, setTextEditor, resetForm }}
+      value={{
+        blog,
+        setBlog,
+        editorState,
+        seteditorState,
+        textEditor,
+        setTextEditor,
+        resetForm,
+      }}
     >
-      <Toaster/>
+      <Toaster />
       {auth.token ? (
-        editorState === "editor" ? (
+        loading ? (
+          <div>Loading...</div>
+        ) : editorState === "editor" ? (
           <BlogEditor />
         ) : (
           <Publishform />
         )
       ) : (
-        <>
-          
-        </>
+        <Navigate to="/sign-in" />
       )}
     </EditorContext.Provider>
   );

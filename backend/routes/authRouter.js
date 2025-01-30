@@ -104,7 +104,7 @@ router.get("/latest-blogs", (req, res) => {
       "personalInfo.Fullname personalInfo.profile_img personalInfo.username -_id"
     )
     .sort({ createdAt: -1 })
-    .select("blogId title desc banner activity tags publishedAt -_id ")
+    .select("blogId title desc content banner activity tags publishedAt -_id ")
     // .limit(maxLimit)
     .then((blogs) => {
       return res.status(200).json({ blogs });

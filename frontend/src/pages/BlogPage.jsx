@@ -6,6 +6,8 @@ import GetDay from "../components/GetDay";
 import BlogInteraction from "../components/BlogInteraction";
 import BlogCard from "../components/BlogCard"
 import axios from "axios";
+import BlogContent from "../components/BlogContent";
+import CommentsContainer, { fetchComments } from "../components/CommentsContainer";
 
 export const blogStructure = {
   title: "",
@@ -22,13 +24,23 @@ const BlogPage = () => {
   const [blog, setBlog] = useState(blogStructure);
   const [similarBlogs, setSimilarBlogs] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isLikedByUser, setIsLikedByUser] = useState(false);
+  const [commentWrapper, setCommentWrapper] = useState(true);
+  const [totalParentComments, setTotalParentComments] = useState(0);
 
-  let { title, banner, desc, author: { personalInfo: { Fullname, username: author_username, profile_img } }, publishedAt } = blog;
+  let { title, banner, content, author: { personalInfo: { Fullname, username: author_username, profile_img } }, publishedAt } = blog;
 
-  const fetchBlog = () => {
+  const fetchBlog =  () => {
     axios.post(import.meta.env.VITE_BACKEND_URL + "/blog/get-blog", { blogId })
-      .then(({ data: { blog } }) => {
+      .then( async({ data: { blog } }) => {
+
+        console.log('Default blog', blog);
+        blog.comments = await fetchComments({blogId: blog._id, setParentCommentCountFun: setTotalParentComments})
+        console.log('Updated blog', blog);
+
+
         setBlog(blog);
+
 
         axios.post(import.meta.env.VITE_BACKEND_URL + "/search-blogs", { tag: blog.tags[0], limit: 6, eliminate_blog: blogId })
           .then(({ data }) => {
@@ -53,14 +65,16 @@ const BlogPage = () => {
     setBlog(blogStructure);
     setSimilarBlogs(null);
     setLoading(true);
+    setCommentWrapper(false);
+    setTotalParentComments(0);
   }
-
   return (
     <AnimationWrapper>
       {loading ? (
         <h1>Loading...</h1>
       ) : (
-        <BlogContext.Provider value={{ blog, setBlog }}>
+        <BlogContext.Provider value={{ blog, setBlog, isLikedByUser, setIsLikedByUser, commentWrapper, setCommentWrapper, totalParentComments, setTotalParentComments }}>
+          <CommentsContainer />
           <div className="max-w-[900px] block mx-auto py-10 max-lg:px-[5vw] ">
             <img src={banner} className="aspect-video" alt="" />
             <div className="mt-12">
@@ -89,6 +103,16 @@ const BlogPage = () => {
             <BlogInteraction />
 
             {/* blog content will go here */}
+
+            <div className="my-12 blog-page-content">
+              {
+                content && content[0].blocks.map((block,index)=>{
+                  return <div key={index} className="my-4 md:my-8">
+                    <BlogContent block={block}/>
+                  </div>
+                })
+              }
+            </div>
 
             <BlogInteraction />
 

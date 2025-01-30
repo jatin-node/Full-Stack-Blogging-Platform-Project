@@ -10,7 +10,8 @@ import BlogPage from "./pages/BlogPage";
 
 function App() {
   const location = useLocation();
-  const hideNavbar = matchPath({ path: "/:user/editor", end: true }, location.pathname);
+  const hideNavbar = matchPath({ path: "/:user/editor", end: true }, location.pathname) ||
+                     matchPath({ path: "/:user/editor/:blogId", end: true }, location.pathname);
 
   return (
       <div className="">
@@ -22,6 +23,7 @@ function App() {
           <Route path="/log-out" element={<Home />} />
           <Route path="/search/:query" element={<SearchPage />} />
           <Route path="/:user/editor" element={<Editor />}/>
+          <Route path="/:user/editor/:blogId" element={<Editor />}/>
           <Route path="/user/:id" element={<ProfilePage/>}/>
           <Route path="/blog/:blogId" element={<BlogPage/>} />
           <Route path="*" element={<PageNotFound />}/>

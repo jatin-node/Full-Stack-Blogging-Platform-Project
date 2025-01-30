@@ -5,18 +5,17 @@ import { EditorContext } from "../pages/Editor";
 import Tag from "./Tag";
 import { apiPost } from "../utils/api";
 import { AuthContext } from "../context/AuthContext";
+import { useParams } from "react-router-dom";
 
 const Publishform = () => {
   let characterlimit = 200;
   const tagsLimit = 10;
+
+  let { blogId } = useParams();
+
   const { auth } = useContext(AuthContext);
   let {
-    blog: { title, banner, desc, tags, content, draft },
-    blog,
-    setBlog,
-    seteditorState,
-    resetForm,
-  } = useContext(EditorContext);
+    blog: { title, banner, desc, tags, content, draft }, blog, setBlog, seteditorState, resetForm } = useContext(EditorContext);
 
   const handleCloseEvent = () => {
     seteditorState("editor");
@@ -34,6 +33,7 @@ const Publishform = () => {
       e.target.value = "";
     }
   };
+
   // Add tag function
   const addTag = (tag) => {
     if (tags.length < tagsLimit && !tags.includes(tag) && tag.length) {
@@ -42,6 +42,7 @@ const Publishform = () => {
       toast.error("You can only add up to 10 tags.");
     }
   };
+  
   // Publish blog function
   const handlePublish = async () => {
     if (tags.length < 1) {
@@ -49,9 +50,8 @@ const Publishform = () => {
       return;
     }
     const loadingToast = toast.loading("Publishing blog...");
-
     const blogData = { title, banner, desc, tags, content, draft: false };
-    await apiPost(`/${auth.user.username}/create-blog`, blogData);
+    await apiPost(`/${auth.user.username}/create-blog`, {...blogData, id: blogId});
     toast.dismiss(loadingToast);
     toast.success("Blog published successfully!");
     resetForm();
@@ -113,9 +113,7 @@ const Publishform = () => {
           <p className="mt-1 lg:w-[70%] text-zinc-400 text-sm text-right">
             {characterlimit - desc.length} characters left
           </p>
-        {/* </div> */}
 
-        {/* <div className="mx-auto max-w-[900px] w-full p-5 flex flex-col justify-center items-start"> */}
           <p className="text-zinc-400 mb-2 mt-9">Topics-(helps in searching)</p>
           <div className="relative px-2 py-2 pb-4 bg-zinc-200 rounded-md w-full lg:w-[70%]">
             <input

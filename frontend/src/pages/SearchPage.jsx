@@ -37,7 +37,6 @@ const SearchPage = () => {
 
   // mobile view users card
   const UserCardWrapper = (user, index) => {
-    console.log(users);
     return (
       <AnimationWrapper
         key={index}

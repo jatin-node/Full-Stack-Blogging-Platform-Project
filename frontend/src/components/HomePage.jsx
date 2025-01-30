@@ -15,14 +15,16 @@ const HomePage = () => {
   let categories = [
     "nature",
     "forest",
-    "space",
+    "animals",
     "mountains",
     "space",
     "ocean",
     "technology",
-    "food",
-    "travel",
+    "camping",
+    "photography",
     "fashion",
+    "research",
+    "travel"
   ];
 
   const loadBlogByCategory = async (e) => {
@@ -37,7 +39,6 @@ const HomePage = () => {
 
   const fetchLatestBlogs = async () => {
     const response = await apiGet("/latest-blogs");
-    console.log(response.blogs);
     setBlog(response.blogs);
   };
   const fetchBlogCategory = async () => {
@@ -122,7 +123,7 @@ const HomePage = () => {
               <span>Filters</span>
               <i className="fi fi-rr-filter-list"></i>
             </h1>
-            <div className="flex gap-3 flex-wrap">
+            <div className="flex gap-2 flex-wrap">
               {categories.map((category, index) => {
                 return (
                   <button

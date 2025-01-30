@@ -19,6 +19,7 @@ const Auth = ({ type }) => {
   const serverConnect = async (endpoint, formData) => {
     try {
       const response = await apiPost(endpoint, formData);
+      console.log(response);
       const { token, user } = response;
       setAuth({ token, user });
       localStorage.setItem("user", JSON.stringify(user));

@@ -58,7 +58,6 @@ const ProfilePage = () => {
 
     const response = await apiPost("/search-blogs", { author: user_id });
     response.user_id = user_id;
-    console.log(response);
     setBlogs(response.blogs);
   };
 
@@ -77,7 +76,7 @@ const ProfilePage = () => {
       {loading ? (
         <div className="loading">Loading...</div>
       ) : profile?.personalInfo?.username?.length ? (
-        <section className="h-cover md:flex flex-row-reverse items-start gap-5 min-[1100px]:gap-12 md:px-20">
+        <section className="h-cover md:flex flex-row-reverse items-start gap-5 min-[1100px]:gap-12 md:px-28">
           <div className="flex flex-col items-center gap-5 min-w-[250px] md-w-[50%] md:pl-8 md:mt-5 md:border-l border-zinc-200 md:sticky md:top-0 md:py-10">
             <img
               src={profile_img}
