@@ -58,15 +58,16 @@ const Navbar = () => {
               onClick={() => setisclicked(!isclicked)}
               className="block sm:hidden text-2xl cursor-pointer fi fi-rr-search"
             ></i>
-            <div
-              onClick={handleEditorClick}
-              className="hidden sm:flex items-center gap-2 link pl-4 bg-zinc-100 rounded-md py-3 font-semibold cursor-pointer"
-            >
-              <i className="fi fi-tr-file-edit"></i>
-              <span className="">Write</span>
-            </div>
+
             {auth.user ? (
               <>
+                <div
+                  onClick={handleEditorClick}
+                  className="hidden sm:flex items-center gap-2 link pl-4 bg-zinc-100 rounded-md py-3 font-semibold cursor-pointer"
+                >
+                  <i className="fi fi-tr-file-edit"></i>
+                  <span className="">Write</span>
+                </div>
                 <Link to="/dashboard/notification">
                   <button className="w-12 h-12 rounded-full bg-gray-100 hover:bg-black/10 relative">
                     <i className="fi fi-rs-bell text-xl block mt-1"></i>
@@ -89,6 +90,13 @@ const Navbar = () => {
               </>
             ) : (
               <>
+                <div
+                  onClick={handleEditorClick}
+                  className="flex items-center gap-2 link pl-4 bg-zinc-100 rounded-md py-3 font-semibold cursor-pointer"
+                >
+                  <i className="fi fi-tr-file-edit"></i>
+                  <span className="">Write</span>
+                </div>
                 <Link to="/sign-in">
                   <span className="auth-btn">Sign in</span>
                 </Link>
