@@ -6,11 +6,12 @@ import { BlogContext } from "../pages/BlogPage";
 import axios from "axios";
 
 const CommentField = ({ action }) => {
-    const { blog, setBlog, comments, setTotalParentComments, blog: {_id, activity, comments: { results: commentsArr },  author: {_id: blog_author}} } = useContext(BlogContext);
+    const { blog, setBlog, comments, setTotalParentComments } = useContext(BlogContext);
+    const { _id, activity, comments: { results: commentsArr }, author: { _id: blog_author } } = blog;
     // console.log(comments);
 
   const [comment, setComment] = useState("");
-  const { auth, auth: {user: { Fullname, username, profile_img }} } = useContext(AuthContext);
+  const { auth } = useContext(AuthContext);
   const handleComment = () => {
     if (!auth.token) {
       return toast.error("Log-in first to comment");
@@ -26,7 +27,7 @@ const CommentField = ({ action }) => {
     .then(({ data })=>{
         console.log(data);
         setComment("");
-        data.commented_by = { personalInfo: { Fullname, username, profile_img } }
+        data.commented_by = { personalInfo: { Fullname: auth.user.Fullname, username: auth.user.username, profile_img: auth.user.profile_img } }
         
         let newCommentarr;
         data.childrenlevel = 0;
